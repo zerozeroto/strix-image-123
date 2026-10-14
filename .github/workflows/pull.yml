@@ -1,0 +1,15 @@
+name: pull-strix
+on: workflow_dispatch
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull
+        run: docker pull ghcr.io/usestrix/strix-sandbox:1.3.0
+      - name: Compress
+        run: docker save ghcr.io/usestrix/strix-sandbox:1.3.0 | gzip > strix.tar.gz
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: strix-${{ github.run_id }}
+          files: strix.tar.gz
