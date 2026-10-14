@@ -1,5 +1,7 @@
 name: pull-strix
 on: workflow_dispatch
+permissions:
+  contents: write   # 关键：授予写权限
 jobs:
   pull:
     runs-on: ubuntu-latest
@@ -8,8 +10,9 @@ jobs:
         run: docker pull ghcr.io/usestrix/strix-sandbox:1.3.0
       - name: Compress
         run: docker save ghcr.io/usestrix/strix-sandbox:1.3.0 | gzip > strix.tar.gz
-      - name: Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: strix-${{ github.run_id }}
-          files: strix.tar.gz
+          name: strix-image
+          path: strix.tar.gz
+          retention-days: 3
